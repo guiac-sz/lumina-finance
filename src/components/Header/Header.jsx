@@ -13,12 +13,12 @@ export default function Header() {
 
             <nav className="nav">
 
-                <Link to="/">
-                    Home
+                <Link to="/overview">
+                    Visão Geral
                 </Link>
 
-                <Link to="/dashboard">
-                    Dashboard
+                <Link to="/transactions">
+                    Transações
                 </Link>
 
             </nav>

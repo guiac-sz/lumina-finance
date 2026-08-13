@@ -4,7 +4,7 @@ Plataforma de gestão financeira pessoal desenvolvida como projeto de portfólio
 
 ## 💡 Sobre
 
-O **Cifora** permitirá que usuários registrem e categorizem suas transações, acompanhem sua situação financeira através de dashboards e gráficos e importem extratos bancários.
+O **Lumina** permitirá que usuários registrem e categorizem suas transações, acompanhem sua situação financeira através de dashboards e gráficos e importem extratos bancários.
 
 Como diferencial, o projeto também pretende oferecer **simulações de cenários financeiros**, permitindo comparar diferentes possibilidades e visualizar seus possíveis impactos ao longo do tempo.
 
