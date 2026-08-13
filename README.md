@@ -1,16 +1,61 @@
-# React + Vite
+# Lumina
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma de gestão financeira pessoal desenvolvida como projeto de portfólio, com o objetivo de transformar o controle de receitas e despesas em uma experiência mais completa de análise e planejamento financeiro.
 
-Currently, two official plugins are available:
+## 💡 Sobre
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+O **Cifora** permitirá que usuários registrem e categorizem suas transações, acompanhem sua situação financeira através de dashboards e gráficos e importem extratos bancários.
 
-## React Compiler
+Como diferencial, o projeto também pretende oferecer **simulações de cenários financeiros**, permitindo comparar diferentes possibilidades e visualizar seus possíveis impactos ao longo do tempo.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Funcionalidades
 
-## Expanding the ESLint configuration
+- [ ] Cadastro e autenticação de usuários
+- [ ] Registro de receitas e despesas
+- [ ] Categorias personalizadas
+- [ ] Dashboard financeiro
+- [ ] Gráficos e indicadores
+- [ ] Filtros por período e categoria
+- [ ] Importação de extratos em CSV
+- [ ] Categorização de transações
+- [ ] Simulação de cenários financeiros
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tecnologias
+
+### Front-end
+
+- React
+- JavaScript / TypeScript
+- CSS
+
+### Back-end
+
+- Node.js
+- Express
+- PostgreSQL
+
+### Outros
+
+- Docker
+- Git / GitHub
+- Jest
+
+> A stack poderá ser alterada durante o desenvolvimento conforme as necessidades do projeto.
+
+## 📋 Roadmap
+
+1. Estrutura inicial do projeto
+2. Modelagem do banco de dados
+3. Desenvolvimento da API
+4. Autenticação
+5. CRUD de transações e categorias
+6. Desenvolvimento do dashboard
+7. Importação de CSV
+8. Simulador financeiro
+9. Testes e melhorias
+
+## 📌 Status
+
+🚧 **Em desenvolvimento**
+
+Projeto pessoal criado para estudo, experimentação e portfólio.
