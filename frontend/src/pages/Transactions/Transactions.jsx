@@ -7,9 +7,10 @@ export default function Transactions() {
     return (
         <div className="new-transaction-container">
             <div className="page-header">
+                
                 <div>
-                    <h1>Nova transação</h1>
-                    <p>Adicione uma nova movimentação</p>
+                    <h1>Lista de transações</h1>
+                    <p>Aqui você pode visualizar todas as suas transações</p>
                 </div>
 
                 <button className="new-transaction-button" onClick={() => setIsPanelOpen(true)}>
@@ -18,10 +19,7 @@ export default function Transactions() {
 
             </div>
 
-            <div className="transactions-list">
-                <h2>Lista de transações</h2>
-                <p>Aqui você pode visualizar todas as suas transações</p>
-            </div>
+            
 
             {isPanelOpen && (
                 <form className="transaction-form">
