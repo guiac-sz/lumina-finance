@@ -117,8 +117,12 @@
     cursor: pointer;
 }
 
-.type-options button:first-child {
-    background-color: #4f6ef7;
+.type-options button:hover {
+    background-color: #3b5cd1;
+}
+
+.type-options button.selected {
+    background-color: #3b5cd1;
     color: white;
 }
 
