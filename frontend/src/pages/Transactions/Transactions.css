@@ -160,3 +160,45 @@
     color: white;
     border: none;
 }
+
+.transactions-list {
+    margin-top: 30px;
+
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+
+    overflow: hidden;
+}
+
+.transactions-header,
+.transaction-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr 1fr 1.3fr 1fr;
+
+    align-items: center;
+
+    padding: 14px 16px;
+}
+
+.transactions-header {
+    background-color: #f8f8f8;
+
+    font-size: 13px;
+    font-weight: bold;
+    color: #666;
+}
+
+.transaction-item {
+    border-top: 1px solid #eeeeee;
+
+    font-size: 14px;
+    color: #555;
+}
+
+.transaction-item p {
+    margin: 0;
+}
+
+.transaction-item:hover {
+    background-color: #fafafa;
+}

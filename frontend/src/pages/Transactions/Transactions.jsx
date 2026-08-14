@@ -98,13 +98,6 @@ export default function Transactions() {
                 <div>
                     <h1>Lista de transações</h1>
                     <p>Aqui você pode visualizar todas as suas transações</p>
-
-                    {transactions.map((transaction, index) => (
-                        <div key={index}>
-                            <p>{transaction.description}</p>
-                            <p>R$ {transaction.amount}</p>
-                        </div>
-                    ))}
                 </div>
 
                 <button className="new-transaction-button" onClick={() => setIsPanelOpen(true)}>
@@ -112,6 +105,32 @@ export default function Transactions() {
                 </button>
 
             </div>
+
+            <div className="transactions-list">
+
+                <div className="transactions-header">
+                    <span>Data</span>
+                    <span>Descrição</span>
+                    <span>Categoria</span>
+                    <span>Tipo</span>
+                    <span>Conta</span>
+                    <span>Valor</span>
+                </div>
+
+                {transactions.map((transaction, index) => (
+                    <div className="transaction-item" key={index}>
+                        <p>{transaction.date}</p>
+                        <p>{transaction.description}</p>
+                        <p>{transaction.category}</p>
+                        <p>{transaction.type === "expense" ? "Despesa" : "Receita"}</p>
+                        <p>{transaction.account}</p>
+                        <p>R$ {transaction.amount}</p>
+                    </div>
+                ))}
+
+            </div>
+
+            
 
             
 
