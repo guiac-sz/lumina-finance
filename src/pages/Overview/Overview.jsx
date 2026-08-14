@@ -3,8 +3,10 @@ import "./Overview.css";
 export default function Overview() {
     return (
         <div>
-            <h1>Visão geral</h1>
-            <p>Acompanhe sua saúde financeira</p>
+            <div className="overview-text">
+                <h1>Visão geral</h1>
+                <p>Acompanhe sua saúde financeira</p>
+            </div>
 
             <div className="overview-cards">
 
