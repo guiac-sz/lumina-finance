@@ -14,11 +14,15 @@ export default function Header() {
             <nav className="nav">
 
                 <Link to="/overview">
-                    Visão Geral
+                    Visão geral
                 </Link>
 
                 <Link to="/transactions">
                     Transações
+                </Link>
+
+                <Link to="/categories">
+                    Categorias
                 </Link>
 
             </nav>

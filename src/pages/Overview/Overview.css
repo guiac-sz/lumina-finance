@@ -1,0 +1,22 @@
+.overview-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    width: 250px;
+    padding: 20px;
+
+    background-color: white;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+}
+
+.card h2 {
+    font-size: 18px;
+}
+
+.card p {
+    font-size: 16px;
+}
