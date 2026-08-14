@@ -1,5 +1,5 @@
 import "./Transactions.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Transactions() {
 
@@ -14,6 +14,8 @@ export default function Transactions() {
     const [paymentMethod, setPaymentMethod] = useState("");
     const [note, setNote] = useState("");
     const [isRecurring, setIsRecurring] = useState(false);
+
+    const [transactions, setTransactions] = useState([]);
 
     const categories = [
     "Alimentação",
@@ -51,8 +53,43 @@ export default function Transactions() {
         isRecurring
     };
 
-    console.log(transaction);
-}
+    const response = await fetch("http://localhost:3000/transactions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(transaction)
+    });
+
+    const data = await response.json();
+
+    setTransactions([...transactions, data]);
+
+    setType("");
+    setDescription("");
+    setAmount("");
+    setCategory("");
+    setDate("");
+    setAccount("");
+    setPaymentMethod("");
+    setNote("");
+    setIsRecurring(false);
+
+    setIsPanelOpen(false);
+
+    console.log(data);
+    }
+
+    useEffect(() => {
+    fetch("http://localhost:3000/transactions")
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("DADOS DO BACKEND:", data);
+            setTransactions(data);
+        });
+    }, []);
+
+    console.log("TRANSAÇÕES:", transactions);
 
     return (
         <div className="new-transaction-container">
@@ -61,6 +98,13 @@ export default function Transactions() {
                 <div>
                     <h1>Lista de transações</h1>
                     <p>Aqui você pode visualizar todas as suas transações</p>
+
+                    {transactions.map((transaction, index) => (
+                        <div key={index}>
+                            <p>{transaction.description}</p>
+                            <p>R$ {transaction.amount}</p>
+                        </div>
+                    ))}
                 </div>
 
                 <button className="new-transaction-button" onClick={() => setIsPanelOpen(true)}>
