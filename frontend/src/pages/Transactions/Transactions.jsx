@@ -42,16 +42,16 @@ export default function Transactions() {
         event.preventDefault();
 
         const transaction = {
-        type,
-        description,
-        amount,
-        category,
-        date,
-        account,
-        paymentMethod,
-        note,
-        isRecurring
-    };
+            type,
+            description,
+            amount,
+            category,
+            date,
+            account,
+            payment_method: paymentMethod,
+            note,
+            is_recurring: isRecurring
+        };
 
     const response = await fetch("http://localhost:3000/transactions", {
         method: "POST",
