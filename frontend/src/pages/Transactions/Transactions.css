@@ -1,204 +1,1084 @@
 .new-transaction-container {
-    padding: 30px;
+    min-height: calc(100vh - 70px);
+
+    padding: 40px;
+
+    box-sizing: border-box;
+
+    background-color: #f8f9fc;
 }
+
+
+/* =========================
+   CABEÇALHO DA PÁGINA
+========================= */
 
 .page-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 32px;
+}
+
+.page-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #4f6ef7;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
 }
 
 .page-header h1 {
-    margin-bottom: 5px;
+    margin: 0 0 6px;
+
+    color: #1f2937;
+
+    font-size: 30px;
 }
 
 .page-header p {
-    margin-top: 0;
-    color: #777;
+    margin: 0;
+
+    color: #7b8496;
+
+    font-size: 14px;
 }
 
-/* Botão de nova transação */
+
+/* =========================
+   BOTÃO NOVA TRANSAÇÃO
+========================= */
 
 .new-transaction-button {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 12px 18px;
+
     border: none;
-    padding: 10px 20px;
+    border-radius: 8px;
+
     background-color: #4f6ef7;
-    color: white;
-    border-radius: 5px;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
     cursor: pointer;
+
+    box-shadow: 0 4px 12px rgba(79, 110, 247, 0.2);
+
+    transition:
+        background-color 0.2s,
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.new-transaction-button span {
+    font-size: 18px;
+    line-height: 1;
 }
 
 .new-transaction-button:hover {
-    background-color: #3b5cd1;
+    background-color: #405de6;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 15px rgba(79, 110, 247, 0.25);
 }
 
 
-/* Formulário */
+/* =========================
+   CONTAINER DA LISTA
+========================= */
 
-.transaction-form {
-    position: fixed;
-    top: 70px;
-    right: 0;
+.transactions-section {
+    overflow: hidden;
 
-    width: 35%;
-    min-width: 350px;
+    border: 1px solid #eceef3;
+    border-radius: 12px;
 
-    height: calc(100vh - 70px);
+    background-color: #ffffff;
 
-    background-color: white;
-    padding: 30px;
-    box-sizing: border-box;
-
-    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.04);
 }
 
 
-/* Linhas do formulário */
+/* =========================
+   TOOLBAR
+========================= */
 
-.form-row {
-    display: flex;
-    flex-direction: column;
-}
-
-
-/* Cada campo */
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-
-    flex: 1;
-    gap: 5px;
-
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-
-/* Inputs e selects */
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    padding: 10px;
-
-    border: 1px solid #dddddd;
-    border-radius: 5px;
-
-    font-size: 14px;
-}
-
-
-/* Observação */
-
-.form-group textarea {
-    height: 50px;
-}
-
-
-/* Botões Despesa e Receita */
-
-.type-options {
-    display: flex;
-}
-
-.type-options button {
-    flex: 1;
-
-    padding: 10px;
-
-    background-color: white;
-    border: 1px solid #dddddd;
-
-    cursor: pointer;
-}
-
-.type-options button:hover {
-    background-color: #3b5cd1;
-}
-
-.type-options button.selected {
-    background-color: #3b5cd1;
-    color: white;
-}
-
-
-/* Checkbox */
-
-.checkbox-row {
+.transactions-toolbar {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
 
-    margin-bottom: 20px;
+    padding: 22px 24px;
+
+    border-bottom: 1px solid #eceef3;
+}
+
+.transactions-toolbar h2 {
+    margin: 0 0 4px;
+
+    color: #272d3b;
+
+    font-size: 17px;
+}
+
+.transactions-toolbar p {
+    margin: 0;
+
+    color: #9399a8;
+
+    font-size: 13px;
 }
 
 
-/* Botões finais */
+/* =========================
+   BUSCA
+========================= */
 
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
+.transactions-filter input {
+    width: 220px;
+
+    padding: 10px 12px;
+
+    border: 1px solid #e1e4ea;
+    border-radius: 7px;
+
+    background-color: #fafbfc;
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition: 0.2s;
 }
 
-.form-actions button {
-    padding: 10px 25px;
-
-    border: 1px solid #dddddd;
-    border-radius: 5px;
-
-    cursor: pointer;
+.transactions-filter input::placeholder {
+    color: #a3a8b3;
 }
 
-.form-actions button:last-child {
-    background-color: #4f6ef7;
-    color: white;
-    border: none;
+.transactions-filter input:focus {
+    border-color: #4f6ef7;
+
+    background-color: #ffffff;
+
+    box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.08);
 }
+
+
+/* =========================
+   LISTA
+========================= */
 
 .transactions-list {
-    margin-top: 30px;
-
-    border: 1px solid #eeeeee;
-    border-radius: 8px;
-
-    overflow: hidden;
+    width: 100%;
 }
 
 .transactions-header,
 .transaction-item {
     display: grid;
-    grid-template-columns: 1fr 2fr 1.5fr 1fr 1.3fr 1fr;
+
+    grid-template-columns:
+        0.8fr
+        1.8fr
+        1.2fr
+        0.9fr
+        1.2fr
+        1fr
+        0.5fr;
 
     align-items: center;
 
-    padding: 14px 16px;
+    column-gap: 20px;
+
+    padding: 15px 24px;
 }
+
+
+/* =========================
+   CABEÇALHO DA LISTA
+========================= */
 
 .transactions-header {
-    background-color: #f8f8f8;
+    background-color: #fafbfc;
 
-    font-size: 13px;
-    font-weight: bold;
-    color: #666;
+    color: #9096a5;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
 }
 
-.transaction-item {
-    border-top: 1px solid #eeeeee;
 
-    font-size: 14px;
-    color: #555;
+/* =========================
+   ITEM DA TRANSAÇÃO
+========================= */
+
+.transaction-item {
+    min-height: 42px;
+
+    border-top: 1px solid #f0f1f4;
+
+    color: #575f70;
+
+    font-size: 13px;
+
+    transition: background-color 0.15s;
+}
+
+.transaction-item:hover {
+    background-color: #fafbff;
 }
 
 .transaction-item p {
     margin: 0;
 }
 
-.transaction-item:hover {
-    background-color: #fafafa;
+
+/* =========================
+   DESCRIÇÃO
+========================= */
+
+.transaction-description {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    color: #353b48;
+
+    font-weight: 500;
+}
+
+.transaction-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 30px;
+    height: 30px;
+
+    border-radius: 8px;
+
+    background-color: #f1f4ff;
+    color: #4f6ef7;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   DATA
+========================= */
+
+.transaction-date {
+    color: #7c8493;
+
+    font-size: 12px;
+}
+
+
+/* =========================
+   CATEGORIA
+========================= */
+
+.category-badge {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    background-color: #f2f3f6;
+    color: #646b7a;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+
+/* =========================
+   TIPO
+========================= */
+
+.type-badge {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.type-badge.expense {
+    background-color: #fff0f0;
+    color: #dc4c4c;
+}
+
+.type-badge.income {
+    background-color: #edf9f2;
+    color: #2c9960;
+}
+
+
+/* =========================
+   VALOR
+========================= */
+
+.transaction-amount {
+    font-weight: 600;
+}
+
+.expense-value {
+    color: #d34b4b;
+}
+
+.income-value {
+    color: #239b61;
+}
+
+
+/* =========================
+   AÇÕES
+========================= */
+
+.transaction-actions {
+    display: flex;
+    align-items: center;
+}
+
+.delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border: 1px solid #f1d1d1;
+    border-radius: 7px;
+
+    background-color: #fffafa;
+    color: #d34b4b;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.delete-button span {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.delete-button:hover {
+    border-color: #efb5b5;
+
+    background-color: #fff0f0;
+    color: #c93f3f;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   ESTADO VAZIO
+========================= */
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 80px 20px;
+
+    text-align: center;
+}
+
+.empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    margin-bottom: 15px;
+
+    border-radius: 12px;
+
+    background-color: #f1f4ff;
+    color: #4f6ef7;
+
+    font-size: 25px;
+}
+
+.empty-state h3 {
+    margin: 0 0 7px;
+
+    color: #303746;
+
+    font-size: 16px;
+}
+
+.empty-state p {
+    max-width: 360px;
+
+    margin: 0 0 20px;
+
+    color: #8b92a2;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.empty-state button {
+    padding: 10px 16px;
+
+    border: 1px solid #dfe3ea;
+    border-radius: 7px;
+
+    background-color: #ffffff;
+    color: #4f6ef7;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.empty-state button:hover {
+    border-color: #cdd5ff;
+
+    background-color: #f8f9ff;
+}
+
+
+/* =========================
+   OVERLAY
+========================= */
+
+.transaction-overlay {
+    position: fixed;
+
+    inset: 70px 0 0 0;
+
+    z-index: 9;
+
+    background-color: rgba(17, 24, 39, 0.28);
+
+    backdrop-filter: blur(2px);
+
+    animation: overlayFadeIn 0.25s ease forwards;
+}
+
+.transaction-overlay.closing {
+    animation: overlayFadeOut 0.25s ease forwards;
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayFadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+
+/* =========================
+   PAINEL LATERAL
+========================= */
+
+.transaction-form {
+    position: fixed;
+
+    top: 70px;
+    right: 0;
+
+    z-index: 10;
+
+    width: 460px;
+    max-width: 100%;
+
+    height: calc(100vh - 70px);
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+    background-color: #ffffff;
+
+    box-shadow: -12px 0 35px rgba(17, 24, 39, 0.12);
+
+    overflow-y: auto;
+
+    animation: panelSlideIn 0.3s ease forwards;
+}
+
+.transaction-form.closing {
+    animation: panelSlideOut 0.25s ease forwards;
+}
+
+@keyframes panelSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0.7;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes panelSlideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0.7;
+    }
+}
+
+
+/* =========================
+   CABEÇALHO DO FORM
+========================= */
+
+.transaction-form-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding: 28px 30px 22px;
+}
+
+.form-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #4f6ef7;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.3px;
+}
+
+.transaction-form-header h2 {
+    margin: 0 0 6px;
+
+    color: #272d3b;
+
+    font-size: 23px;
+}
+
+.transaction-form-header p {
+    max-width: 330px;
+
+    margin: 0;
+
+    color: #8991a2;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.close-form-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #f5f6f8;
+    color: #7b8290;
+
+    font-size: 21px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.close-form-button:hover {
+    background-color: #eceef3;
+    color: #343a49;
+}
+
+.form-divider {
+    height: 1px;
+
+    background-color: #eceef3;
+}
+
+
+/* =========================
+   SEÇÕES DO FORM
+========================= */
+
+.form-section {
+    padding: 24px 30px 4px;
+}
+
+.form-section + .form-section {
+    border-top: 1px solid #f0f1f4;
+}
+
+.form-section-title {
+    display: block;
+
+    margin-bottom: 18px;
+
+    color: #959cab;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+}
+
+
+/* =========================
+   CAMPOS
+========================= */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #4e5666;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.optional-label {
+    color: #a2a8b4;
+
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 13px;
+
+    border: 1px solid #dfe3ea;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+    color: #353b48;
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background-color 0.2s;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #a3a8b3;
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: #ccd2dc;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #4f6ef7;
+
+    box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.08);
+}
+
+.form-group textarea {
+    min-height: 85px;
+
+    resize: vertical;
+}
+
+
+/* =========================
+   CAMPO DE VALOR
+========================= */
+
+.amount-input {
+    display: flex;
+    align-items: center;
+
+    border: 1px solid #dfe3ea;
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    background-color: #ffffff;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+}
+
+.amount-input:focus-within {
+    border-color: #4f6ef7;
+
+    box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.08);
+}
+
+.amount-input span {
+    padding-left: 13px;
+
+    color: #8a91a0;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.amount-input input {
+    border: none;
+
+    box-shadow: none;
+}
+
+.amount-input input:hover {
+    border: none;
+}
+
+.amount-input input:focus {
+    border: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================
+   DESPESA / RECEITA
+========================= */
+
+.type-options {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+}
+
+.type-options button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 11px;
+
+    border: 1px solid #e0e3e9;
+    border-radius: 8px;
+
+    background-color: #fafbfc;
+    color: #747b89;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s,
+        transform 0.2s;
+}
+
+.type-options button:hover {
+    border-color: #d2d7e0;
+
+    background-color: #f5f6f9;
+
+    transform: translateY(-1px);
+}
+
+.type-options button.expense-selected {
+    border-color: #f3c7c7;
+
+    background-color: #fff3f3;
+    color: #d65252;
+
+    box-shadow: none;
+}
+
+.type-options button.income-selected {
+    border-color: #bfe6d0;
+
+    background-color: #effaf4;
+    color: #26985c;
+
+    box-shadow: none;
+}
+
+.type-option-icon {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   TRANSAÇÃO RECORRENTE
+========================= */
+
+.recurring-option {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    margin-bottom: 22px;
+
+    padding: 13px;
+
+    border: 1px solid #e7e9ee;
+    border-radius: 8px;
+
+    background-color: #fafbfc;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.recurring-option:hover {
+    border-color: #d7dbe4;
+
+    background-color: #f8f9fb;
+}
+
+.recurring-option input {
+    margin-top: 3px;
+
+    accent-color: #4f6ef7;
+
+    cursor: pointer;
+}
+
+.recurring-option div span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #4c5362;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.recurring-option p {
+    margin: 0;
+
+    color: #969daa;
+
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+
+/* =========================
+   BOTÕES DO FORM
+========================= */
+
+.form-actions {
+    position: sticky;
+
+    bottom: 0;
+
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 18px 30px;
+
+    border-top: 1px solid #eceef3;
+
+    background-color: rgba(255, 255, 255, 0.96);
+
+    backdrop-filter: blur(8px);
+}
+
+.form-actions button {
+    padding: 11px 18px;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s,
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.cancel-button {
+    border: 1px solid #dfe3ea;
+
+    background-color: #ffffff;
+    color: #626a79;
+}
+
+.cancel-button:hover {
+    background-color: #f5f6f8;
+}
+
+.save-transaction-button {
+    border: none;
+
+    background-color: #4f6ef7;
+    color: #ffffff;
+
+    box-shadow: 0 3px 10px rgba(79, 110, 247, 0.18);
+}
+
+.save-transaction-button:hover {
+    background-color: #405de6;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 14px rgba(79, 110, 247, 0.25);
+}
+
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 1000px) {
+
+    .new-transaction-container {
+        padding: 30px 20px;
+    }
+
+    .transactions-section {
+        overflow-x: auto;
+    }
+
+    .transactions-list {
+        min-width: 850px;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+    .new-transaction-button {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+    .transactions-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    .transactions-filter {
+        width: 100%;
+    }
+
+    .transactions-filter input {
+        width: 100%;
+
+        box-sizing: border-box;
+    }
+
+    .transaction-form {
+        width: 100%;
+    }
+
+    .transaction-form-header,
+    .form-section,
+    .form-actions {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+
 }

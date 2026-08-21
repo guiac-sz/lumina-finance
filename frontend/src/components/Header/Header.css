@@ -4,13 +4,22 @@
 
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
-    padding: 0 30px;
+    padding: 0 40px;
     box-sizing: border-box;
 
     background-color: #ffffff;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e8eaf0;
+
+    position: relative;
+    z-index: 100;
 }
+
+
+/* =========================
+   LOGO
+========================= */
 
 .logo-container {
     display: flex;
@@ -18,41 +27,177 @@
     gap: 10px;
 
     text-decoration: none;
-    color: #222;
+    color: #252b3a;
 }
 
 .logo-container img {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
+
     object-fit: contain;
 }
 
 .logo-container span {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 19px;
+    font-weight: 700;
+
+    letter-spacing: -0.3px;
 }
 
-.nav {
+
+/* =========================
+   NAVEGAÇÃO
+========================= */
+
+.nav-menu {
+    position: absolute;
+
+    left: 48%;
+    transform: translateX(-50%);
+
+    height: 100%;
+
     display: flex;
-    justify-content: flex-start;
-    gap: 35px;
+    align-items: center;
 
-    flex: 1;
-
-    margin-left: 50px;
+    gap: 36px;
 }
 
-.nav a {
+.nav-link {
+    position: relative;
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+
     text-decoration: none;
-    color: #777;
-    font-size: 15px;
-}
 
-.nav a:hover {
-    color: #4f46e5;
-}
+    color: #777f90;
 
-.user {
     font-size: 14px;
-    color: #555;
+    font-weight: 500;
+
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #4f6ef7;
+}
+
+
+/* Página atualmente selecionada */
+
+.nav-link.active {
+    color: #4f6ef7;
+    font-weight: 600;
+}
+
+
+/* Linha embaixo da página selecionada */
+
+.nav-link.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 2px;
+
+    background-color: #4f6ef7;
+
+    border-radius: 2px 2px 0 0;
+}
+
+
+/* =========================
+   USUÁRIO
+========================= */
+
+.user-area {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    line-height: 1.2;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #343a49;
+}
+
+.user-label {
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: #9a9fad;
+}
+
+
+/* =========================
+   AVATAR
+========================= */
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color: #eef1ff;
+    color: #4f6ef7;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.user-avatar:hover {
+    background-color: #e1e6ff;
+}
+
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 800px) {
+
+    .header {
+        padding: 0 20px;
+    }
+
+    .nav-menu {
+        position: static;
+
+        transform: none;
+
+        gap: 20px;
+    }
+
+    .user-info {
+        display: none;
+    }
+
 }
