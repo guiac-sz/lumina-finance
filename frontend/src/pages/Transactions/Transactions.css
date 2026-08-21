@@ -189,17 +189,18 @@
     display: grid;
 
     grid-template-columns:
-        0.8fr
-        1.8fr
-        1.2fr
-        0.9fr
-        1.2fr
+        0.75fr
+        1.6fr
+        1.1fr
+        0.85fr
+        1.1fr
+        1.1fr
         1fr
-        0.5fr;
+        0.7fr;
 
     align-items: center;
 
-    column-gap: 20px;
+    column-gap: 16px;
 
     padding: 15px 24px;
 }
@@ -473,6 +474,10 @@
     border-color: #cdd5ff;
 
     background-color: #f8f9ff;
+}
+
+.empty-value {
+    color: #b4b9c3;
 }
 
 

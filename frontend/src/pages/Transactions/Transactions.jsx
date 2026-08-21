@@ -79,9 +79,9 @@ export default function Transactions() {
             category,
             date,
             account,
-            paymentMethod,
+            payment_method: paymentMethod,
             note,
-            isRecurring
+            is_recurring: isRecurring
         };
 
         try {
@@ -124,6 +124,37 @@ export default function Transactions() {
 
         loadTransactions();
     }, []);
+
+    async function handleDelete(id) {
+        const confirmed = window.confirm(
+            "Deseja realmente excluir esta transação?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:3000/transactions/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Erro ao excluir transação");
+            }
+
+            setTransactions((currentTransactions) =>
+                currentTransactions.filter(
+                    (transaction) => transaction.id !== id
+                )
+            );
+        } catch (error) {
+            console.error("Erro ao excluir transação:", error);
+        }
+    }
 
     return (
         <div className="new-transaction-container">
@@ -184,6 +215,7 @@ export default function Transactions() {
                         <span>Descrição</span>
                         <span>Categoria</span>
                         <span>Tipo</span>
+                        <span>Pagamento</span>
                         <span>Conta</span>
                         <span>Valor</span>
                         <span>Ações</span>
@@ -222,61 +254,52 @@ export default function Transactions() {
                             >
 
                                 <p className="transaction-date">
-                                    {new Date(transaction.date).toLocaleDateString("pt-BR", {timeZone: "UTC"})}
+                                    {new Date(transaction.date).toLocaleDateString("pt-BR", { timeZone: "UTC" })}
                                 </p>
 
                                 <div className="transaction-description">
 
                                     <div className="transaction-icon">
-                                        {transaction.type === "expense"
-                                            ? "↓"
-                                            : "↑"}
+                                        {transaction.type === "expense" ? "↓" : "↑"}
                                     </div>
 
                                     <p>
                                         {transaction.description}
                                     </p>
-
                                 </div>
 
                                 <p>
-                                    <span className="category-badge">
-                                        {transaction.category}
-                                    </span>
+                                    {transaction.category ? (
+                                        <span className="category-badge">
+                                            {transaction.category}
+                                        </span>
+                                    ) : (
+                                        <span className="empty-value">—</span>
+                                    )}
                                 </p>
 
                                 <p>
                                     <span
-                                        className={`type-badge ${
-                                            transaction.type === "expense"
-                                                ? "expense"
-                                                : "income"
-                                        }`}
+                                        className={`type-badge ${transaction.type === "expense" ? "expense" : "income"}`}
                                     >
-                                        {transaction.type === "expense"
-                                            ? "Despesa"
-                                            : "Receita"}
+                                        {transaction.type === "expense" ? "Despesa" : "Receita"}
                                     </span>
                                 </p>
 
                                 <p>
-                                    {transaction.account}
+                                    {transaction.payment_method || "—"}
+                                </p>    
+                                    
+                                <p>
+                                    {transaction.account || "—"}
                                 </p>
 
                                 <p
-                                    className={`transaction-amount ${
-                                        transaction.type === "expense"
-                                            ? "expense-value"
-                                            : "income-value"
-                                    }`}
+                                    className={`transaction-amount ${transaction.type === "expense" ? "expense-value" : "income-value"}`}
                                 >
-                                    {transaction.type === "expense"
-                                        ? "- "
-                                        : "+ "}
+                                    {transaction.type === "expense" ? "- " : "+ "}
 
-                                    R$ {Number(transaction.amount)
-                                        .toFixed(2)
-                                        .replace(".", ",")}
+                                    R$ {Number(transaction.amount).toFixed(2).replace(".", ",")}
                                 </p>
 
                                 <div className="transaction-actions">
@@ -284,6 +307,7 @@ export default function Transactions() {
                                     <button
                                         type="button"
                                         className="delete-button"
+                                        onClick={() => handleDelete(transaction.id)}
                                     >
                                         Excluir
                                         <span>×</span>
@@ -358,7 +382,7 @@ export default function Transactions() {
                                     <button
                                         type="button"
                                         onClick={() => setType("expense")}
-                                        className= {type === "expense" ? "selected expense-selected" : ""}
+                                        className={type === "expense" ? "selected expense-selected" : ""}
                                     >
                                         <span className="type-option-icon">
                                             ↓
@@ -370,7 +394,7 @@ export default function Transactions() {
                                     <button
                                         type="button"
                                         onClick={() => setType("income")}
-                                        className= {type === "income" ? "selected income-selected" : ""}
+                                        className={type === "income" ? "selected income-selected" : ""}
                                     >
 
                                         <span className="type-option-icon">
