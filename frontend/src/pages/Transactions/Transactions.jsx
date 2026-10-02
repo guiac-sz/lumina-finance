@@ -1,6 +1,13 @@
 import "./Transactions.css";
 import { useState, useEffect } from "react";
 
+function normalizeText(text) {
+    return (text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
 export default function Transactions() {
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [isPanelClosing, setIsPanelClosing] = useState(false);
@@ -14,7 +21,7 @@ export default function Transactions() {
     const [paymentMethod, setPaymentMethod] = useState("");
     const [note, setNote] = useState("");
     const [isRecurring, setIsRecurring] = useState(false);
-
+    const [searchTerm, setSearchTerm] = useState("");
     const [transactions, setTransactions] = useState([]);
 
     const categories = [
@@ -37,6 +44,10 @@ export default function Transactions() {
         "Pix",
         "Dinheiro"
     ];
+
+    const filteredTransactions = transactions.filter((transaction) =>
+        normalizeText(transaction.description).includes(normalizeText(searchTerm))
+    );
 
     function openPanel() {
         setIsPanelClosing(false);
@@ -203,6 +214,8 @@ export default function Transactions() {
                         <input
                             type="text"
                             placeholder="Buscar transação..."
+                            value={searchTerm}
+                            onChange={(event) => setSearchTerm(event.target.value)}
                         />
                     </div>
 
@@ -244,9 +257,23 @@ export default function Transactions() {
 
                         </div>
 
+                    ) : filteredTransactions.length === 0 ? (
+
+                        <div className="empty-state">
+
+                            <h3>
+                                Nenhuma transação encontrada
+                            </h3>
+
+                            <p>
+                                Nenhuma movimentação corresponde a "{searchTerm}".
+                            </p>
+
+                        </div>
+
                     ) : (
 
-                        transactions.map((transaction, index) => (
+                        filteredTransactions.map((transaction, index) => (
 
                             <div
                                 className="transaction-item"
