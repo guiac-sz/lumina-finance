@@ -1,27 +1,468 @@
-.overview-text {
-    padding: 30px;
+/* Todas as classes desta tela começam com "overview-" porque o CSS do Vite
+   é global: nomes genéricos (.card, .page-header) bagunçariam outras telas. */
+
+.overview-container {
+    min-height: calc(100vh - 70px);
+
+    box-sizing: border-box;
+
+    background-color: #f8f9fc;
 }
 
-.overview-cards {
+.overview-page {
+    max-width: 1440px;
+
+    margin: 0 auto;
+
+    padding: 36px 40px 56px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   CABEÇALHO DA PÁGINA
+========================= */
+
+.overview-header {
     display: flex;
-    justify-content: center;
-    gap: 20px;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 28px;
 }
 
-.card {
-    width: 280px;
-    height: 160px;
-    padding: 20px;
+.overview-label {
+    color: #4f6ef7;
 
-    background-color: white;
-    border: 1px solid #dddddd;
-    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
 }
 
-.card h2 {
-    font-size: 18px;
+.overview-header h1 {
+    margin: 6px 0;
+
+    color: #1f2937;
+
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-.card p {
+.overview-header p {
+    margin: 0;
+
+    color: #7b8496;
+
+    font-size: 14px;
+}
+
+.overview-header-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* =========================
+   SELETOR DE MÊS
+========================= */
+
+.overview-month-picker {
+    display: flex;
+    align-items: center;
+
+    height: 42px;
+
+    border: 1px solid #e1e4ea;
+    border-radius: 8px;
+
+    background-color: #ffffff;
+}
+
+.overview-month-picker button {
+    width: 38px;
+    height: 100%;
+
+    border: none;
+    border-radius: 8px;
+
+    background: none;
+    color: #575f70;
+
     font-size: 16px;
+
+    cursor: pointer;
+}
+
+.overview-month-picker button:hover {
+    background-color: #f5f6f9;
+    color: #4f6ef7;
+}
+
+.overview-month-picker button:disabled {
+    background: none;
+    color: #c9cdd6;
+
+    cursor: not-allowed;
+}
+
+.overview-month-picker span {
+    min-width: 130px;
+
+    color: #353b48;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+
+/* =========================
+   BOTÃO NOVA TRANSAÇÃO
+========================= */
+
+.overview-primary-button {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    height: 42px;
+
+    padding: 0 18px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: #4f6ef7;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 12px rgba(79, 110, 247, 0.2);
+
+    transition:
+        background-color 0.2s,
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.overview-primary-button span {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.overview-primary-button:hover {
+    background-color: #405de6;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 15px rgba(79, 110, 247, 0.25);
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.overview-card {
+    border: 1px solid #eceef3;
+    border-radius: 12px;
+
+    background-color: #ffffff;
+
+    box-shadow: 0 2px 8px rgba(17, 24, 39, 0.04);
+}
+
+
+/* =========================
+   CARDS DE RESUMO
+========================= */
+
+.overview-kpi-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+.overview-kpi {
+    padding: 20px 22px;
+}
+
+.overview-kpi-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.overview-kpi-label {
+    color: #9096a5;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.overview-kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.overview-kpi-icon.blue {
+    background-color: #eef1ff;
+    color: #4f6ef7;
+}
+
+.overview-kpi-icon.green {
+    background-color: #edf9f2;
+    color: #239b61;
+}
+
+.overview-kpi-icon.red {
+    background-color: #fff0f0;
+    color: #d34b4b;
+}
+
+.overview-kpi-value {
+    margin-top: 12px;
+
+    color: #1f2937;
+
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    font-variant-numeric: tabular-nums;
+}
+
+.overview-kpi-value.negative {
+    color: #d34b4b;
+}
+
+.overview-kpi-foot {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 8px;
+
+    color: #8b92a2;
+
+    font-size: 12.5px;
+}
+
+
+/* =========================
+   VARIAÇÃO (VS. MÊS ANTERIOR)
+========================= */
+
+.overview-delta {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 2px 7px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.overview-delta.good {
+    background-color: #edf9f2;
+    color: #239b61;
+}
+
+.overview-delta.bad {
+    background-color: #fff0f0;
+    color: #d34b4b;
+}
+
+.overview-delta.neutral {
+    background-color: #f2f3f6;
+    color: #646b7a;
+}
+
+
+/* =========================
+   BARRA DE PROGRESSO
+========================= */
+
+.overview-progress {
+    height: 6px;
+
+    margin-top: 10px;
+
+    border-radius: 4px;
+
+    background-color: #f0f1f5;
+
+    overflow: hidden;
+}
+
+.overview-progress div {
+    height: 100%;
+
+    border-radius: 4px;
+
+    background-color: #4f6ef7;
+
+    transition: width 0.3s ease;
+}
+
+
+/* =========================
+   CARREGANDO
+========================= */
+
+.overview-skeleton {
+    border-radius: 6px;
+
+    background: linear-gradient(
+        90deg,
+        #f0f1f5 25%,
+        #e6e8ee 50%,
+        #f0f1f5 75%
+    );
+    background-size: 200% 100%;
+
+    animation: overviewShimmer 1.2s linear infinite;
+}
+
+.overview-skeleton-value {
+    width: 60%;
+    height: 30px;
+
+    margin-top: 12px;
+}
+
+.overview-skeleton-foot {
+    width: 45%;
+    height: 14px;
+
+    margin-top: 10px;
+}
+
+@keyframes overviewShimmer {
+    from {
+        background-position: 200% 0;
+    }
+
+    to {
+        background-position: -200% 0;
+    }
+}
+
+
+/* =========================
+   ERRO
+========================= */
+
+.overview-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 60px 20px;
+
+    text-align: center;
+}
+
+.overview-error h3 {
+    margin: 0 0 7px;
+
+    color: #303746;
+
+    font-size: 16px;
+}
+
+.overview-error p {
+    max-width: 360px;
+
+    margin: 0 0 20px;
+
+    color: #8b92a2;
+
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.overview-error button {
+    padding: 10px 16px;
+
+    border: 1px solid #dfe3ea;
+    border-radius: 7px;
+
+    background-color: #ffffff;
+    color: #4f6ef7;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.overview-error button:hover {
+    border-color: #cdd5ff;
+
+    background-color: #f8f9ff;
+}
+
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 1100px) {
+
+    .overview-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .overview-page {
+        padding: 24px 16px 40px;
+    }
+
+    .overview-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .overview-header-actions {
+        flex-wrap: wrap;
+    }
+
+    .overview-kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
 }

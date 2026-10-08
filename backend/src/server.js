@@ -162,6 +162,86 @@ app.get("/transactions/count", async (req, res) => {
     }
 });
 
+// Mês atual no formato "AAAA-MM" (usado quando a URL não traz ?month=).
+function getCurrentMonth() {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+
+    return `${today.getFullYear()}-${month}`;
+}
+
+// Resumo da visão geral. Todos os cálculos são feitos pelo banco.
+// Cada etapa da tela ganha novos campos neste mesmo JSON.
+app.get("/summary", async (req, res) => {
+    try {
+        const month = req.query.month === undefined
+            ? getCurrentMonth()
+            : req.query.month;
+
+        // Ano de 4 dígitos (sem 0000) e mês de 01 a 12.
+        if (typeof month !== "string" || !/^[1-9]\d{3}-(0[1-9]|1[0-2])$/.test(month)) {
+            return res.status(400).json({
+                error: "Mês inválido. Use o formato AAAA-MM, por exemplo 2026-10."
+            });
+        }
+
+        // $1 é sempre o primeiro dia do mês escolhido. O PostgreSQL calcula
+        // o mês seguinte e o anterior, já acertando virada de ano e fevereiro.
+        const result = await pool.query(
+            `SELECT
+                COALESCE(SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END), 0)
+                    AS balance,
+
+                COALESCE(SUM(amount) FILTER (
+                    WHERE type = 'income'
+                    AND date >= $1::date
+                    AND date < $1::date + INTERVAL '1 month'
+                ), 0) AS income,
+
+                COALESCE(SUM(amount) FILTER (
+                    WHERE type = 'expense'
+                    AND date >= $1::date
+                    AND date < $1::date + INTERVAL '1 month'
+                ), 0) AS expense,
+
+                COALESCE(SUM(amount) FILTER (
+                    WHERE type = 'income'
+                    AND date >= $1::date - INTERVAL '1 month'
+                    AND date < $1::date
+                ), 0) AS previous_income,
+
+                COALESCE(SUM(amount) FILTER (
+                    WHERE type = 'expense'
+                    AND date >= $1::date - INTERVAL '1 month'
+                    AND date < $1::date
+                ), 0) AS previous_expense
+            FROM transactions`,
+            [`${month}-01`]
+        );
+
+        const row = result.rows[0];
+
+        // O pg devolve NUMERIC como texto: converte para número antes de responder.
+        res.json({
+            month,
+            currentBalance: Number(row.balance),
+            currentMonth: {
+                income: Number(row.income),
+                expense: Number(row.expense)
+            },
+            previousMonth: {
+                income: Number(row.previous_income),
+                expense: Number(row.previous_expense)
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Erro ao gerar o resumo"
+        });
+    }
+});
+
 const WALLET_ACCOUNT = "Carteira";
 const CASH_PAYMENT_METHOD = "Dinheiro";
 
