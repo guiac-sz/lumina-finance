@@ -1,3 +1,6 @@
+-- Extensão que permite buscar ignorando acentos (usada na busca de transações)
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 -- Cria a tabela de transações do Lumina
 CREATE TABLE IF NOT EXISTS transactions (
     id             INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

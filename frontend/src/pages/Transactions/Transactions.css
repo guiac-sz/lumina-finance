@@ -143,36 +143,233 @@
 
 
 /* =========================
-   BUSCA
+   BOTÃO LIMPAR FILTROS
 ========================= */
 
-.transactions-filter input {
-    width: 220px;
+.clear-filters-button {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 8px 12px;
+
+    border: 1px solid #dfe3ea;
+    border-radius: 7px;
+
+    background-color: #ffffff;
+    color: #4f6ef7;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.clear-filters-button span {
+    font-size: 15px;
+    line-height: 1;
+}
+
+.clear-filters-button:hover {
+    border-color: #cdd5ff;
+
+    background-color: #f8f9ff;
+}
+
+
+/* =========================
+   FILTROS
+========================= */
+
+.transactions-filters {
+    padding: 18px 24px 4px;
+
+    border-bottom: 1px solid #eceef3;
+
+    background-color: #fafbfc;
+}
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+
+    gap: 14px 16px;
+
+    margin-bottom: 14px;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    flex: 1 1 160px;
+
+    min-width: 0;
+}
+
+.filter-field label {
+    color: #8b92a2;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.filter-search {
+    flex: 2 1 260px;
+}
+
+.filter-type {
+    flex: 1 1 280px;
+}
+
+.filter-field input,
+.filter-field select {
+    width: 100%;
+
+    box-sizing: border-box;
 
     padding: 10px 12px;
 
     border: 1px solid #e1e4ea;
     border-radius: 7px;
 
-    background-color: #fafbfc;
+    background-color: #ffffff;
+    color: #353b48;
 
     font-size: 13px;
 
     outline: none;
 
-    transition: 0.2s;
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
-.transactions-filter input::placeholder {
+.filter-field input::placeholder {
     color: #a3a8b3;
 }
 
-.transactions-filter input:focus {
+.filter-field input:hover,
+.filter-field select:hover {
+    border-color: #ccd2dc;
+}
+
+.filter-field input:focus,
+.filter-field select:focus {
     border-color: #4f6ef7;
 
-    background-color: #ffffff;
-
     box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.08);
+}
+
+
+/* =========================
+   FILTRO DE TIPO
+========================= */
+
+.filter-type-options {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 6px;
+}
+
+.filter-type-options button {
+    padding: 10px 8px;
+
+    border: 1px solid #e1e4ea;
+    border-radius: 7px;
+
+    background-color: #ffffff;
+    color: #747b89;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s,
+        border-color 0.2s,
+        color 0.2s;
+}
+
+.filter-type-options button:hover {
+    border-color: #d2d7e0;
+
+    background-color: #f5f6f9;
+}
+
+.filter-type-options button.selected {
+    border-color: #cdd5ff;
+
+    background-color: #f1f4ff;
+    color: #4f6ef7;
+}
+
+.filter-type-options button.expense-selected {
+    border-color: #f3c7c7;
+
+    background-color: #fff3f3;
+    color: #d65252;
+}
+
+.filter-type-options button.income-selected {
+    border-color: #bfe6d0;
+
+    background-color: #effaf4;
+    color: #26985c;
+}
+
+
+/* =========================
+   RESUMO DO RESULTADO
+========================= */
+
+.transactions-summary {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 12px;
+
+    padding: 18px 24px;
+
+    border-bottom: 1px solid #eceef3;
+}
+
+.summary-card {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    padding: 14px 16px;
+
+    border: 1px solid #eceef3;
+    border-radius: 10px;
+
+    background-color: #ffffff;
+}
+
+.summary-card span {
+    color: #9096a5;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.summary-card strong {
+    font-size: 18px;
 }
 
 
@@ -1032,14 +1229,14 @@
         gap: 15px;
     }
 
-    .transactions-filter {
-        width: 100%;
+    .transactions-filters,
+    .transactions-summary {
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
-    .transactions-filter input {
-        width: 100%;
-
-        box-sizing: border-box;
+    .transactions-summary {
+        grid-template-columns: 1fr;
     }
 
     .transaction-form {
