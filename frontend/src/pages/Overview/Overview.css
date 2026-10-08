@@ -338,8 +338,20 @@
    PAINÉIS (GRÁFICOS E LISTAS)
 ========================= */
 
+/* Gráfico ocupa 2 partes da largura e a lista ao lado ocupa 1. */
 .overview-row {
+    display: grid;
+
+    grid-template-columns: 2fr 1fr;
+
+    gap: 20px;
+
     margin-bottom: 20px;
+}
+
+/* Sem isso o gráfico (que mede a largura do pai) não encolhe dentro do grid. */
+.overview-row > .overview-card {
+    min-width: 0;
 }
 
 .overview-panel-head {
@@ -411,6 +423,126 @@
     color: #a3a8b3;
 
     font-size: 11.5px;
+}
+
+
+/* =========================
+   DESPESAS POR CATEGORIA
+========================= */
+
+.overview-cat-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+
+    margin-top: 4px;
+}
+
+.overview-cat-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 7px;
+
+    font-size: 13.5px;
+}
+
+.overview-cat-name {
+    color: #353b48;
+
+    font-weight: 500;
+}
+
+.overview-cat-value {
+    color: #353b48;
+
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.overview-cat-value small {
+    margin-left: 6px;
+
+    color: #8b92a2;
+
+    font-size: inherit;
+    font-weight: 500;
+}
+
+.overview-cat-track {
+    height: 8px;
+
+    border-radius: 4px;
+
+    background-color: #f0f1f5;
+}
+
+.overview-cat-fill {
+    height: 100%;
+
+    border-radius: 4px;
+
+    background-color: #4f6ef7;
+
+    transition: opacity 0.15s;
+}
+
+.overview-cat-row:hover .overview-cat-fill {
+    opacity: 0.8;
+}
+
+.overview-cat-total {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 18px;
+    padding-top: 14px;
+
+    border-top: 1px solid #eceef3;
+
+    color: #575f70;
+
+    font-size: 13.5px;
+}
+
+.overview-cat-total strong {
+    color: #1f2937;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.overview-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 28px 8px 12px;
+
+    text-align: center;
+}
+
+.overview-empty strong {
+    margin-bottom: 7px;
+
+    color: #303746;
+
+    font-size: 14px;
+}
+
+.overview-empty p {
+    max-width: 280px;
+
+    margin: 0;
+
+    color: #8b92a2;
+
+    font-size: 13px;
+    line-height: 1.6;
 }
 
 
@@ -494,6 +626,10 @@
     height: 250px;
 }
 
+.overview-skeleton-category {
+    height: 38px;
+}
+
 @keyframes overviewShimmer {
     from {
         background-position: 200% 0;
@@ -569,6 +705,10 @@
 
     .overview-kpi-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .overview-row {
+        grid-template-columns: 1fr;
     }
 
 }

@@ -240,6 +240,22 @@ app.get("/summary", async (req, res) => {
             [`${month}-01`]
         );
 
+        // Despesas do mês por categoria, da maior para a menor. O GROUP BY agrupa
+        // as despesas de cada categoria e o SUM soma cada grupo. Despesa antiga
+        // sem categoria entra como "Sem categoria" em vez de ficar com nome vazio.
+        const categoriesResult = await pool.query(
+            `SELECT
+                COALESCE(category, 'Sem categoria') AS category,
+                SUM(amount) AS total
+            FROM transactions
+            WHERE type = 'expense'
+                AND date >= $1::date
+                AND date < $1::date + INTERVAL '1 month'
+            GROUP BY COALESCE(category, 'Sem categoria')
+            ORDER BY total DESC, category ASC`,
+            [`${month}-01`]
+        );
+
         const row = result.rows[0];
 
         // O pg devolve NUMERIC como texto: converte para número antes de responder.
@@ -258,6 +274,10 @@ app.get("/summary", async (req, res) => {
                 month: item.month,
                 income: Number(item.income),
                 expense: Number(item.expense)
+            })),
+            expensesByCategory: categoriesResult.rows.map((item) => ({
+                category: item.category,
+                total: Number(item.total)
             }))
         });
     } catch (error) {

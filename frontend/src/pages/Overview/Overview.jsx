@@ -297,6 +297,14 @@ export default function Overview() {
         })
         : [];
 
+    // Despesas por categoria. A lista já vem ordenada da API (maior primeiro).
+    // A barra de cada categoria é proporcional à maior delas.
+    const expensesByCategory = summary ? summary.expensesByCategory : [];
+    const maxCategoryTotal = Math.max(
+        0,
+        ...expensesByCategory.map((item) => item.total)
+    );
+
     // Para a nota "em andamento (até 08/10)".
     const today = new Date();
     const todayLabel = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}`;
@@ -544,6 +552,97 @@ export default function Overview() {
                                         <div className="overview-chart-note">
                                             * {capitalize(getMonthName(month))} em andamento (até {todayLabel})
                                         </div>
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                            <div className="overview-card">
+
+                                <div className="overview-panel-head">
+
+                                    <div>
+                                        <h2>
+                                            Despesas por categoria
+                                        </h2>
+
+                                        <p>
+                                            {formatMonthLabel(month)}
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div className="overview-panel-body">
+
+                                    {isLoading ? (
+
+                                        <div className="overview-cat-list">
+                                            <div className="overview-skeleton overview-skeleton-category"></div>
+                                            <div className="overview-skeleton overview-skeleton-category"></div>
+                                            <div className="overview-skeleton overview-skeleton-category"></div>
+                                        </div>
+
+                                    ) : expensesByCategory.length === 0 ? (
+
+                                        <div className="overview-empty">
+
+                                            <strong>
+                                                Nenhuma despesa em {formatMonthLabel(month)}
+                                            </strong>
+
+                                            <p>
+                                                Quando você registrar despesas neste mês,
+                                                elas aparecem aqui por categoria.
+                                            </p>
+
+                                        </div>
+
+                                    ) : (
+
+                                        <>
+
+                                            <div className="overview-cat-list">
+
+                                                {expensesByCategory.map((item) => (
+                                                    <div className="overview-cat-row" key={item.category}>
+
+                                                        <div className="overview-cat-line">
+                                                            <span className="overview-cat-name">
+                                                                {item.category}
+                                                            </span>
+
+                                                            <span className="overview-cat-value">
+                                                                {formatCurrency(item.total)}
+
+                                                                <small>
+                                                                    {formatPercent((item.total / expense) * 100)}
+                                                                </small>
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Barra proporcional à maior categoria (a maior ocupa 100%) */}
+                                                        <div className="overview-cat-track">
+                                                            <div
+                                                                className="overview-cat-fill"
+                                                                style={{ width: `${(item.total / maxCategoryTotal) * 100}%` }}
+                                                            ></div>
+                                                        </div>
+
+                                                    </div>
+                                                ))}
+
+                                            </div>
+
+                                            <div className="overview-cat-total">
+                                                <span>Total de despesas</span>
+
+                                                <strong>{formatCurrency(expense)}</strong>
+                                            </div>
+
+                                        </>
+
                                     )}
 
                                 </div>
