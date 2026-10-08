@@ -7,6 +7,8 @@ import {
     WALLET_ACCOUNT,
     CASH_PAYMENT_METHOD
 } from "../../constants/transactions";
+import { formatCurrency } from "../../utils/format";
+import { API_URL } from "../../utils/api";
 
 const PERIOD_OPTIONS = [
     { value: "all", label: "Todos" },
@@ -59,13 +61,6 @@ function getPeriodRange(period, customFrom, customTo) {
     }
 
     return { from: "", to: "" };
-}
-
-function formatCurrency(value) {
-    return value.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
 }
 
 export default function Transactions() {
@@ -251,8 +246,8 @@ export default function Transactions() {
             const isEditing = editingId !== null;
 
             const url = isEditing
-                ? `http://localhost:3000/transactions/${editingId}`
-                : "http://localhost:3000/transactions";
+                ? `${API_URL}/transactions/${editingId}`
+                : `${API_URL}/transactions`;
 
             const response = await fetch(url, {
                 method: isEditing ? "PUT" : "POST",
@@ -310,7 +305,7 @@ export default function Transactions() {
 
             try {
                 const response = await fetch(
-                    `http://localhost:3000/transactions?${params}`,
+                    `${API_URL}/transactions?${params}`,
                     { signal: controller.signal }
                 );
 
@@ -360,7 +355,7 @@ export default function Transactions() {
         async function loadTotalCount() {
             try {
                 const response = await fetch(
-                    "http://localhost:3000/transactions/count"
+                    `${API_URL}/transactions/count`
                 );
 
                 const data = await response.json();
@@ -407,7 +402,7 @@ export default function Transactions() {
 
         try {
             const response = await fetch(
-                `http://localhost:3000/transactions/${id}`,
+                `${API_URL}/transactions/${id}`,
                 {
                     method: "DELETE"
                 }
