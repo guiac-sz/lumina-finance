@@ -363,6 +363,23 @@
 .transaction-actions {
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+
+.edit-button {
+    padding: 7px 10px;
+    border: 1px solid #d9dde3;
+    border-radius: 7px;
+    background-color: #ffffff;
+    color: #4a5260;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.edit-button:hover {
+    border-color: #b9c0ca;
+    background-color: #f5f7fa;
+    transform: translateY(-1px);
 }
 
 .delete-button {

@@ -23,6 +23,7 @@ export default function Transactions() {
     const [isRecurring, setIsRecurring] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [transactions, setTransactions] = useState([]);
+    const [editingId, setEditingId] = useState(null);
 
     const categories = [
         "Alimentação",
@@ -54,12 +55,27 @@ export default function Transactions() {
         setIsPanelOpen(true);
     }
 
+    function openEditPanel(transaction) {
+        setType(transaction.type);
+        setDescription(transaction.description);
+        setAmount(transaction.amount);
+        setCategory(transaction.category || "");
+        setDate(transaction.date.slice(0, 10));
+        setAccount(transaction.account || "");
+        setPaymentMethod(transaction.payment_method || "");
+        setNote(transaction.note || "");
+        setIsRecurring(transaction.is_recurring);
+        setEditingId(transaction.id);
+        openPanel();
+    }
+
     function closePanel() {
         setIsPanelClosing(true);
 
         setTimeout(() => {
             setIsPanelOpen(false);
             setIsPanelClosing(false);
+            resetForm();
         }, 250);
     }
 
@@ -73,6 +89,7 @@ export default function Transactions() {
         setPaymentMethod("");
         setNote("");
         setIsRecurring(false);
+        setEditingId(null);
     }
 
     async function handleSubmit(event) {
@@ -96,25 +113,35 @@ export default function Transactions() {
         };
 
         try {
-            const response = await fetch(
-                "http://localhost:3000/transactions",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(transaction)
-                }
-            );
+            const isEditing = editingId !== null;
+
+            const url = isEditing
+                ? `http://localhost:3000/transactions/${editingId}`
+                : "http://localhost:3000/transactions";
+
+            const response = await fetch(url, {
+                method: isEditing ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(transaction)
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao salvar transação");
+            }
 
             const data = await response.json();
 
-            setTransactions((currentTransactions) => [...currentTransactions, data]);
+            if (isEditing) {
+                setTransactions((current) =>
+                    current.map((t) => (t.id === data.id ? data : t))
+                );
+            } else {
+                setTransactions((current) => [...current, data]);
+            }
 
-            resetForm();
             closePanel();
         } catch (error) {
-            console.error("Erro ao criar transação:", error);
+            console.error("Erro ao salvar transação:", error);
         }
     }
 
@@ -315,8 +342,8 @@ export default function Transactions() {
 
                                 <p>
                                     {transaction.payment_method || "—"}
-                                </p>    
-                                    
+                                </p>
+
                                 <p>
                                     {transaction.account || "—"}
                                 </p>
@@ -330,6 +357,14 @@ export default function Transactions() {
                                 </p>
 
                                 <div className="transaction-actions">
+
+                                    <button
+                                        type="button"
+                                        className="edit-button"
+                                        onClick={() => openEditPanel(transaction)}
+                                    >
+                                        Editar
+                                    </button>
 
                                     <button
                                         type="button"
@@ -368,15 +403,17 @@ export default function Transactions() {
 
                             <div>
                                 <span className="form-label">
-                                    NOVA MOVIMENTAÇÃO
+                                    {editingId ? "EDITAR MOVIMENTAÇÃO" : "NOVA MOVIMENTAÇÃO"}
                                 </span>
 
                                 <h2>
-                                    Nova transação
+                                    {editingId ? "Editar transação" : "Nova transação"}
                                 </h2>
 
                                 <p>
-                                    Preencha os dados abaixo para registrar uma nova movimentação.
+                                    {editingId
+                                        ? "Altere os dados abaixo e salve para atualizar a movimentação."
+                                        : "Preencha os dados abaixo para registrar uma nova movimentação."}
                                 </p>
                             </div>
 
@@ -648,7 +685,7 @@ export default function Transactions() {
                                 type="submit"
                                 className="save-transaction-button"
                             >
-                                Salvar transação
+                                {editingId ? "Salvar alterações" : "Salvar transação"}
                             </button>
 
                         </div>

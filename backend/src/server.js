@@ -96,6 +96,36 @@ app.delete("/transactions/:id", async (req, res) => {
     }
 });
 
+app.put("/transactions/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            type, description, amount, category, date,
+            account, payment_method, note, is_recurring
+        } = req.body;
+
+        const result = await pool.query(
+            `UPDATE transactions
+             SET type = $1, description = $2, amount = $3, category = $4,
+                 date = $5, account = $6, payment_method = $7, note = $8,
+                 is_recurring = $9
+             WHERE id = $10
+             RETURNING *`,
+            [type, description, amount, category, date,
+             account, payment_method, note, is_recurring, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Transação não encontrada" });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao atualizar transação" });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
