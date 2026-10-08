@@ -1,8 +1,20 @@
 import "./Overview.css";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer
+} from "recharts";
 import { formatCurrency } from "../../utils/format";
 import { API_URL } from "../../utils/api";
+
+const INCOME_COLOR = "#1f8a70";
+const EXPENSE_COLOR = "#dc4c4c";
 
 // Mês atual no formato "AAAA-MM" (o mesmo formato que a API usa).
 function getCurrentMonth() {
@@ -31,16 +43,77 @@ function getMonthName(month) {
     });
 }
 
+function capitalize(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 // "2026-10" vira "Outubro de 2026".
 function formatMonthLabel(month) {
     const [year, monthNumber] = month.split("-").map(Number);
 
-    const label = new Date(year, monthNumber - 1, 1).toLocaleDateString(
-        "pt-BR",
-        { month: "long", year: "numeric" }
+    return capitalize(
+        new Date(year, monthNumber - 1, 1).toLocaleDateString("pt-BR", {
+            month: "long",
+            year: "numeric"
+        })
     );
+}
 
-    return label.charAt(0).toUpperCase() + label.slice(1);
+// "2026-05" vira "Mai" (nome curto, para o eixo do gráfico).
+function formatShortMonth(month) {
+    const [year, monthNumber] = month.split("-").map(Number);
+
+    // O navegador devolve "mai." com ponto: tira o ponto.
+    return capitalize(
+        new Date(year, monthNumber - 1, 1)
+            .toLocaleDateString("pt-BR", { month: "short" })
+            .replace(".", "")
+    );
+}
+
+// Valores do eixo vertical: "R$ 500", "R$ 2 mil", "R$ 1,5 mil".
+function formatAxisValue(value) {
+    if (value >= 1000) {
+        const thousands = (value / 1000).toLocaleString("pt-BR", {
+            maximumFractionDigits: 1
+        });
+
+        return `R$ ${thousands} mil`;
+    }
+
+    return `R$ ${value}`;
+}
+
+// Caixinha que aparece ao passar o mouse sobre um mês do gráfico.
+function ChartTooltip({ active, payload }) {
+    if (!active || !payload || payload.length === 0) {
+        return null;
+    }
+
+    const row = payload[0].payload;
+    const balance = Math.round((row.income - row.expense) * 100) / 100;
+
+    return (
+        <div className="overview-tooltip">
+
+            <b>{row.fullLabel}</b>
+
+            <div className="overview-tooltip-row">
+                <i style={{ background: INCOME_COLOR }}></i>
+                Receitas: <b>{formatCurrency(row.income)}</b>
+            </div>
+
+            <div className="overview-tooltip-row">
+                <i style={{ background: EXPENSE_COLOR }}></i>
+                Despesas: <b>{formatCurrency(row.expense)}</b>
+            </div>
+
+            <div className="overview-tooltip-muted">
+                Saldo do mês: {formatCurrency(balance)}
+            </div>
+
+        </div>
+    );
 }
 
 function formatPercent(value) {
@@ -203,6 +276,31 @@ export default function Overview() {
 
     const previousMonthName = getMonthName(shiftMonth(month, -1));
 
+    // Dados do gráfico: um item por mês, com o nome curto para o eixo e o
+    // nome completo para o tooltip (com o ano se for diferente do escolhido).
+    const selectedYear = month.slice(0, 4);
+    const isCurrentMonth = month === currentMonth;
+
+    const chartData = summary
+        ? summary.monthlyTotals.map((item) => {
+            const [itemYear] = item.month.split("-");
+            const fullName = capitalize(getMonthName(item.month));
+            const isPartial = item.month === currentMonth;
+
+            return {
+                ...item,
+                label: formatShortMonth(item.month) + (isPartial ? "*" : ""),
+                fullLabel: (itemYear === selectedYear
+                    ? fullName
+                    : `${fullName} de ${itemYear}`) + (isPartial ? " (parcial)" : "")
+            };
+        })
+        : [];
+
+    // Para a nota "em andamento (até 08/10)".
+    const today = new Date();
+    const todayLabel = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}`;
+
     return (
         <div className="overview-container">
             <div className="overview-page">
@@ -281,77 +379,180 @@ export default function Overview() {
 
                 ) : (
 
-                    <section className="overview-kpi-grid">
+                    <>
 
-                        <KpiCard
-                            label="Saldo atual"
-                            icon="$"
-                            iconColor="blue"
-                            isLoading={isLoading}
-                            value={formatCurrency(currentBalance)}
-                            valueStyle={currentBalance < 0 ? "negative" : ""}
-                        >
-                            <div className="overview-kpi-foot">
-                                em todas as contas
+                        <section className="overview-kpi-grid">
+
+                            <KpiCard
+                                label="Saldo atual"
+                                icon="$"
+                                iconColor="blue"
+                                isLoading={isLoading}
+                                value={formatCurrency(currentBalance)}
+                                valueStyle={currentBalance < 0 ? "negative" : ""}
+                            >
+                                <div className="overview-kpi-foot">
+                                    em todas as contas
+                                </div>
+                            </KpiCard>
+
+                            <KpiCard
+                                label="Receitas do mês"
+                                icon="↑"
+                                iconColor="green"
+                                isLoading={isLoading}
+                                value={formatCurrency(income)}
+                            >
+                                <div className="overview-kpi-foot">
+                                    <VariationBadge
+                                        current={income}
+                                        previous={previousIncome}
+                                        lowerIsBetter={false}
+                                        previousMonthName={previousMonthName}
+                                    />
+                                </div>
+                            </KpiCard>
+
+                            <KpiCard
+                                label="Despesas do mês"
+                                icon="↓"
+                                iconColor="red"
+                                isLoading={isLoading}
+                                value={formatCurrency(expense)}
+                            >
+                                <div className="overview-kpi-foot">
+                                    <VariationBadge
+                                        current={expense}
+                                        previous={previousExpense}
+                                        lowerIsBetter={true}
+                                        previousMonthName={previousMonthName}
+                                    />
+                                </div>
+                            </KpiCard>
+
+                            <KpiCard
+                                label="Economia do mês"
+                                icon="%"
+                                iconColor="blue"
+                                isLoading={isLoading}
+                                value={formatCurrency(savings)}
+                                valueStyle={savings < 0 ? "negative" : ""}
+                            >
+                                <div className="overview-kpi-foot">
+                                    {savedPercent === null
+                                        ? "sem receitas neste mês"
+                                        : savings < 0
+                                            ? "despesas maiores que as receitas"
+                                            : `${formatPercent(savedPercent)} das receitas guardadas`}
+                                </div>
+
+                                <div className="overview-progress" aria-hidden="true">
+                                    <div style={{ width: `${progress}%` }}></div>
+                                </div>
+                            </KpiCard>
+
+                        </section>
+
+                        <section className="overview-row">
+
+                            <div className="overview-card">
+
+                                <div className="overview-panel-head">
+
+                                    <div>
+                                        <h2>
+                                            Receitas x despesas
+                                        </h2>
+
+                                        <p>
+                                            Últimos 6 meses
+                                        </p>
+                                    </div>
+
+                                    <div className="overview-legend">
+                                        <span>
+                                            <i style={{ background: INCOME_COLOR }}></i>
+                                            Receitas
+                                        </span>
+
+                                        <span>
+                                            <i style={{ background: EXPENSE_COLOR }}></i>
+                                            Despesas
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div className="overview-panel-body">
+
+                                    {isLoading ? (
+
+                                        <div className="overview-skeleton overview-skeleton-chart"></div>
+
+                                    ) : (
+
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <BarChart
+                                                data={chartData}
+                                                barGap={2}
+                                                margin={{ top: 22, right: 8, bottom: 0, left: 0 }}
+                                            >
+                                                <CartesianGrid vertical={false} stroke="#eef0f4" />
+
+                                                <XAxis
+                                                    dataKey="label"
+                                                    tickLine={false}
+                                                    axisLine={{ stroke: "#dfe2e8" }}
+                                                    tick={{ fontSize: 12, fill: "#8b92a2" }}
+                                                />
+
+                                                <YAxis
+                                                    width={84}
+                                                    tickLine={false}
+                                                    axisLine={false}
+                                                    tickFormatter={formatAxisValue}
+                                                    tick={{ fontSize: 11.5, fill: "#9096a5" }}
+                                                />
+
+                                                <Tooltip
+                                                    content={<ChartTooltip />}
+                                                    cursor={{ fill: "#4f6ef7", fillOpacity: 0.05 }}
+                                                    wrapperStyle={{ outline: "none" }}
+                                                />
+
+                                                <Bar
+                                                    dataKey="income"
+                                                    name="Receitas"
+                                                    fill={INCOME_COLOR}
+                                                    radius={[4, 4, 0, 0]}
+                                                    maxBarSize={24}
+                                                />
+
+                                                <Bar
+                                                    dataKey="expense"
+                                                    name="Despesas"
+                                                    fill={EXPENSE_COLOR}
+                                                    radius={[4, 4, 0, 0]}
+                                                    maxBarSize={24}
+                                                />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+
+                                    )}
+
+                                    {isCurrentMonth && (
+                                        <div className="overview-chart-note">
+                                            * {capitalize(getMonthName(month))} em andamento (até {todayLabel})
+                                        </div>
+                                    )}
+
+                                </div>
+
                             </div>
-                        </KpiCard>
 
-                        <KpiCard
-                            label="Receitas do mês"
-                            icon="↑"
-                            iconColor="green"
-                            isLoading={isLoading}
-                            value={formatCurrency(income)}
-                        >
-                            <div className="overview-kpi-foot">
-                                <VariationBadge
-                                    current={income}
-                                    previous={previousIncome}
-                                    lowerIsBetter={false}
-                                    previousMonthName={previousMonthName}
-                                />
-                            </div>
-                        </KpiCard>
+                        </section>
 
-                        <KpiCard
-                            label="Despesas do mês"
-                            icon="↓"
-                            iconColor="red"
-                            isLoading={isLoading}
-                            value={formatCurrency(expense)}
-                        >
-                            <div className="overview-kpi-foot">
-                                <VariationBadge
-                                    current={expense}
-                                    previous={previousExpense}
-                                    lowerIsBetter={true}
-                                    previousMonthName={previousMonthName}
-                                />
-                            </div>
-                        </KpiCard>
-
-                        <KpiCard
-                            label="Economia do mês"
-                            icon="%"
-                            iconColor="blue"
-                            isLoading={isLoading}
-                            value={formatCurrency(savings)}
-                            valueStyle={savings < 0 ? "negative" : ""}
-                        >
-                            <div className="overview-kpi-foot">
-                                {savedPercent === null
-                                    ? "sem receitas neste mês"
-                                    : savings < 0
-                                        ? "despesas maiores que as receitas"
-                                        : `${formatPercent(savedPercent)} das receitas guardadas`}
-                            </div>
-
-                            <div className="overview-progress" aria-hidden="true">
-                                <div style={{ width: `${progress}%` }}></div>
-                            </div>
-                        </KpiCard>
-
-                    </section>
+                    </>
 
                 )}
 

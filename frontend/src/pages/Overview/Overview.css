@@ -335,6 +335,130 @@
 
 
 /* =========================
+   PAINÉIS (GRÁFICOS E LISTAS)
+========================= */
+
+.overview-row {
+    margin-bottom: 20px;
+}
+
+.overview-panel-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 20px 24px 0;
+}
+
+.overview-panel-head h2 {
+    margin: 0;
+
+    color: #272d3b;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.overview-panel-head p {
+    margin: 4px 0 0;
+
+    color: #9399a8;
+
+    font-size: 13px;
+}
+
+.overview-panel-body {
+    padding: 16px 24px 22px;
+}
+
+
+/* =========================
+   LEGENDA E NOTA DO GRÁFICO
+========================= */
+
+.overview-legend {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 16px;
+
+    color: #575f70;
+
+    font-size: 12.5px;
+}
+
+.overview-legend span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+.overview-legend i {
+    display: inline-block;
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 3px;
+}
+
+.overview-chart-note {
+    margin-top: 6px;
+
+    color: #a3a8b3;
+
+    font-size: 11.5px;
+}
+
+
+/* =========================
+   TOOLTIP DO GRÁFICO
+========================= */
+
+.overview-tooltip {
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    background-color: #1f2937;
+    color: #ffffff;
+
+    font-size: 12.5px;
+    line-height: 1.55;
+    white-space: nowrap;
+
+    box-shadow: 0 6px 20px rgba(17, 24, 39, 0.18);
+}
+
+.overview-tooltip b {
+    font-weight: 600;
+}
+
+.overview-tooltip-row {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.overview-tooltip-row i {
+    display: inline-block;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 2px;
+}
+
+.overview-tooltip-muted {
+    color: #aeb4c2;
+}
+
+
+/* =========================
    CARREGANDO
 ========================= */
 
@@ -364,6 +488,10 @@
     height: 14px;
 
     margin-top: 10px;
+}
+
+.overview-skeleton-chart {
+    height: 250px;
 }
 
 @keyframes overviewShimmer {

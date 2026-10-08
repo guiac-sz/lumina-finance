@@ -219,6 +219,27 @@ app.get("/summary", async (req, res) => {
             [`${month}-01`]
         );
 
+        // Totais dos 6 meses até o escolhido (para o gráfico).
+        // generate_series cria uma linha para cada mês, mesmo sem transações,
+        // e o LEFT JOIN mantém essas linhas: mês vazio fica com zero, não some.
+        const monthlyResult = await pool.query(
+            `SELECT
+                to_char(m.month_start, 'YYYY-MM') AS month,
+                COALESCE(SUM(t.amount) FILTER (WHERE t.type = 'income'), 0) AS income,
+                COALESCE(SUM(t.amount) FILTER (WHERE t.type = 'expense'), 0) AS expense
+            FROM generate_series(
+                $1::timestamp - INTERVAL '5 months',
+                $1::timestamp,
+                INTERVAL '1 month'
+            ) AS m(month_start)
+            LEFT JOIN transactions t
+                ON t.date >= m.month_start
+                AND t.date < m.month_start + INTERVAL '1 month'
+            GROUP BY m.month_start
+            ORDER BY m.month_start`,
+            [`${month}-01`]
+        );
+
         const row = result.rows[0];
 
         // O pg devolve NUMERIC como texto: converte para número antes de responder.
@@ -232,7 +253,12 @@ app.get("/summary", async (req, res) => {
             previousMonth: {
                 income: Number(row.previous_income),
                 expense: Number(row.previous_expense)
-            }
+            },
+            monthlyTotals: monthlyResult.rows.map((item) => ({
+                month: item.month,
+                income: Number(item.income),
+                expense: Number(item.expense)
+            }))
         });
     } catch (error) {
         console.error(error);
