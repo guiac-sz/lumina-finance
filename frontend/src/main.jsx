@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/" element={<App />}>
 
                     <Route
-                        path="overview"
+                        index
                         element={<Overview />}
                     />
 
