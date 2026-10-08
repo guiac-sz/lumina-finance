@@ -256,6 +256,30 @@ app.get("/summary", async (req, res) => {
             [`${month}-01`]
         );
 
+        // As 5 transações mais recentes do banco inteiro (não dependem do mês).
+        // O id desempata transações com a mesma data e o mesmo created_at.
+        // A data sai como texto AAAA-MM-DD para o front não depender de fuso horário.
+        const recentResult = await pool.query(
+            `SELECT
+                id, type, description, amount, category, account,
+                to_char(date, 'YYYY-MM-DD') AS date
+            FROM transactions
+            ORDER BY date DESC, created_at DESC, id DESC
+            LIMIT 5`
+        );
+
+        // Saldo de cada conta (receitas - despesas, de todas as transações).
+        // Transação sem conta entra como "Sem conta" para que a soma das contas
+        // sempre bata com o saldo atual.
+        const accountsResult = await pool.query(
+            `SELECT
+                COALESCE(account, 'Sem conta') AS account,
+                SUM(CASE WHEN type = 'income' THEN amount ELSE -amount END) AS balance
+            FROM transactions
+            GROUP BY COALESCE(account, 'Sem conta')
+            ORDER BY balance DESC, account ASC`
+        );
+
         const row = result.rows[0];
 
         // O pg devolve NUMERIC como texto: converte para número antes de responder.
@@ -278,6 +302,14 @@ app.get("/summary", async (req, res) => {
             expensesByCategory: categoriesResult.rows.map((item) => ({
                 category: item.category,
                 total: Number(item.total)
+            })),
+            recentTransactions: recentResult.rows.map((item) => ({
+                ...item,
+                amount: Number(item.amount)
+            })),
+            balanceByAccount: accountsResult.rows.map((item) => ({
+                account: item.account,
+                balance: Number(item.balance)
             }))
         });
     } catch (error) {

@@ -10,6 +10,7 @@ import {
     Tooltip,
     ResponsiveContainer
 } from "recharts";
+import { ACCOUNT_DESCRIPTIONS } from "../../constants/transactions";
 import { formatCurrency } from "../../utils/format";
 import { API_URL } from "../../utils/api";
 
@@ -114,6 +115,26 @@ function ChartTooltip({ active, payload }) {
 
         </div>
     );
+}
+
+// "2026-10-07" vira "07/10/2026". Só troca a ordem do texto: não usa Date,
+// assim o fuso horário não consegue mudar o dia.
+function formatDate(date) {
+    return date.split("-").reverse().join("/");
+}
+
+// Iniciais para o avatar da conta: "Nubank" vira "NU" e "Banco do Brasil"
+// vira "BB" (ignora palavras pequenas como "do" e "de").
+function getInitials(name) {
+    const words = name
+        .split(" ")
+        .filter((word) => !["de", "da", "do", "das", "dos", "e"].includes(word.toLowerCase()));
+
+    if (words.length >= 2) {
+        return (words[0][0] + words[1][0]).toUpperCase();
+    }
+
+    return name.slice(0, 2).toUpperCase();
 }
 
 function formatPercent(value) {
@@ -304,6 +325,10 @@ export default function Overview() {
         0,
         ...expensesByCategory.map((item) => item.total)
     );
+
+    // Últimas transações e saldo por conta (não dependem do mês escolhido).
+    const recentTransactions = summary ? summary.recentTransactions : [];
+    const balanceByAccount = summary ? summary.balanceByAccount : [];
 
     // Para a nota "em andamento (até 08/10)".
     const today = new Date();
@@ -516,6 +541,7 @@ export default function Overview() {
 
                                                 <YAxis
                                                     width={84}
+                                                    domain={[0, (dataMax) => (dataMax > 0 ? dataMax : 1000)]}
                                                     tickLine={false}
                                                     axisLine={false}
                                                     tickFormatter={formatAxisValue}
@@ -639,6 +665,217 @@ export default function Overview() {
                                                 <span>Total de despesas</span>
 
                                                 <strong>{formatCurrency(expense)}</strong>
+                                            </div>
+
+                                        </>
+
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <section className="overview-row">
+
+                            <div className="overview-card">
+
+                                <div className="overview-panel-head overview-panel-head-table">
+
+                                    <div>
+                                        <h2>
+                                            Últimas transações
+                                        </h2>
+
+                                        <p>
+                                            As 5 movimentações mais recentes
+                                        </p>
+                                    </div>
+
+                                    <Link to="/transactions" className="overview-text-link">
+                                        Ver todas →
+                                    </Link>
+
+                                </div>
+
+                                {isLoading ? (
+
+                                    <div className="overview-panel-body">
+                                        <div className="overview-list-skeleton">
+                                            <div className="overview-skeleton overview-skeleton-row"></div>
+                                            <div className="overview-skeleton overview-skeleton-row"></div>
+                                            <div className="overview-skeleton overview-skeleton-row"></div>
+                                            <div className="overview-skeleton overview-skeleton-row"></div>
+                                            <div className="overview-skeleton overview-skeleton-row"></div>
+                                        </div>
+                                    </div>
+
+                                ) : recentTransactions.length === 0 ? (
+
+                                    <div className="overview-panel-body">
+                                        <div className="overview-empty">
+
+                                            <strong>
+                                                Nenhuma transação cadastrada ainda
+                                            </strong>
+
+                                            <p>
+                                                Suas movimentações mais recentes
+                                                aparecem aqui.
+                                            </p>
+
+                                            <Link to="/transactions">
+                                                + Adicionar transação
+                                            </Link>
+
+                                        </div>
+                                    </div>
+
+                                ) : (
+
+                                    <div className="overview-table-wrap">
+                                        <table className="overview-tx-table">
+
+                                            <thead>
+                                                <tr>
+                                                    <th>Data</th>
+                                                    <th>Descrição</th>
+                                                    <th className="overview-hide-sm">Categoria</th>
+                                                    <th className="overview-hide-sm">Conta</th>
+                                                    <th className="overview-num">Valor</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                {recentTransactions.map((transaction) => {
+                                                    const isIncomeRow = transaction.type === "income";
+
+                                                    return (
+                                                        <tr key={transaction.id}>
+
+                                                            <td>
+                                                                {formatDate(transaction.date)}
+                                                            </td>
+
+                                                            <td>
+                                                                <div className="overview-tx-desc">
+                                                                    <span className="overview-tx-icon">
+                                                                        {isIncomeRow ? "↑" : "↓"}
+                                                                    </span>
+
+                                                                    {transaction.description}
+                                                                </div>
+                                                            </td>
+
+                                                            <td className="overview-hide-sm">
+                                                                {transaction.category ? (
+                                                                    <span className="overview-badge">
+                                                                        {transaction.category}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="overview-empty-value">—</span>
+                                                                )}
+                                                            </td>
+
+                                                            <td className="overview-hide-sm">
+                                                                {transaction.account || "—"}
+                                                            </td>
+
+                                                            <td className={`overview-num ${isIncomeRow ? "overview-income" : "overview-expense"}`}>
+                                                                {isIncomeRow ? "+ " : "- "}
+                                                                {formatCurrency(transaction.amount)}
+                                                            </td>
+
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+
+                                )}
+
+                            </div>
+
+                            <div className="overview-card">
+
+                                <div className="overview-panel-head">
+
+                                    <div>
+                                        <h2>
+                                            Saldo por conta
+                                        </h2>
+
+                                        <p>
+                                            Considerando todas as transações
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div className="overview-panel-body">
+
+                                    {isLoading ? (
+
+                                        <div className="overview-list-skeleton">
+                                            <div className="overview-skeleton overview-skeleton-account"></div>
+                                            <div className="overview-skeleton overview-skeleton-account"></div>
+                                            <div className="overview-skeleton overview-skeleton-account"></div>
+                                        </div>
+
+                                    ) : balanceByAccount.length === 0 ? (
+
+                                        <div className="overview-empty">
+
+                                            <strong>
+                                                Nenhuma conta com movimentações
+                                            </strong>
+
+                                            <p>
+                                                Os saldos de cada conta aparecem aqui
+                                                assim que você registrar transações.
+                                            </p>
+
+                                        </div>
+
+                                    ) : (
+
+                                        <>
+
+                                            <div className="overview-acc-list">
+
+                                                {balanceByAccount.map((item) => (
+                                                    <div className="overview-acc-row" key={item.account}>
+
+                                                        <span className="overview-acc-avatar">
+                                                            {getInitials(item.account)}
+                                                        </span>
+
+                                                        <span className="overview-acc-name">
+                                                            {item.account}
+
+                                                            {ACCOUNT_DESCRIPTIONS[item.account] && (
+                                                                <small>
+                                                                    {ACCOUNT_DESCRIPTIONS[item.account]}
+                                                                </small>
+                                                            )}
+                                                        </span>
+
+                                                        <span className={`overview-acc-value ${item.balance < 0 ? "negative" : ""}`}>
+                                                            {formatCurrency(item.balance)}
+                                                        </span>
+
+                                                    </div>
+                                                ))}
+
+                                            </div>
+
+                                            <div className="overview-acc-total">
+                                                <span>Saldo total</span>
+
+                                                <strong>{formatCurrency(currentBalance)}</strong>
                                             </div>
 
                                         </>

@@ -26,3 +26,13 @@ export const WALLET_ACCOUNT = "Carteira";
 
 // Forma de pagamento que trava a conta em "Carteira".
 export const CASH_PAYMENT_METHOD = "Dinheiro";
+
+// Descrição curta de cada conta, mostrada no saldo por conta da visão geral.
+// Conta que não estiver aqui aparece sem descrição.
+export const ACCOUNT_DESCRIPTIONS = {
+    "Nubank": "Conta digital",
+    "Bradesco": "Conta corrente",
+    "Caixa Econômica Federal": "Conta corrente",
+    "Banco do Brasil": "Conta corrente",
+    [WALLET_ACCOUNT]: "Dinheiro em espécie"
+};
