@@ -26,3 +26,6 @@ dist-ssr
 # Variáveis de ambiente
 .env
 node_modules/
+
+.claude/
+CLAUDE.md

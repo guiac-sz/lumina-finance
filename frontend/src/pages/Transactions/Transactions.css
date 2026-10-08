@@ -782,6 +782,15 @@
     box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.08);
 }
 
+.form-group select:disabled {
+    border-color: #e7e9ee;
+
+    background-color: #f5f6f8;
+    color: #8a91a0;
+
+    cursor: not-allowed;
+}
+
 .form-group textarea {
     min-height: 85px;
 
@@ -909,65 +918,6 @@
 .type-option-icon {
     font-size: 15px;
     font-weight: 700;
-}
-
-
-/* =========================
-   TRANSAÇÃO RECORRENTE
-========================= */
-
-.recurring-option {
-    display: flex;
-    align-items: flex-start;
-
-    gap: 11px;
-
-    margin-bottom: 22px;
-
-    padding: 13px;
-
-    border: 1px solid #e7e9ee;
-    border-radius: 8px;
-
-    background-color: #fafbfc;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.recurring-option:hover {
-    border-color: #d7dbe4;
-
-    background-color: #f8f9fb;
-}
-
-.recurring-option input {
-    margin-top: 3px;
-
-    accent-color: #4f6ef7;
-
-    cursor: pointer;
-}
-
-.recurring-option div span {
-    display: block;
-
-    margin-bottom: 3px;
-
-    color: #4c5362;
-
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.recurring-option p {
-    margin: 0;
-
-    color: #969daa;
-
-    font-size: 10px;
-    line-height: 1.4;
 }
 
 

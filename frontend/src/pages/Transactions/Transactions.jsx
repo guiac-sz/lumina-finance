@@ -20,7 +20,6 @@ export default function Transactions() {
     const [account, setAccount] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
     const [note, setNote] = useState("");
-    const [isRecurring, setIsRecurring] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [transactions, setTransactions] = useState([]);
     const [editingId, setEditingId] = useState(null);
@@ -46,6 +45,17 @@ export default function Transactions() {
         "Dinheiro"
     ];
 
+    const isIncome = type === "income";
+    const isCashPayment = paymentMethod === "Dinheiro";
+
+    // Receita pode ir para a Carteira; despesa em dinheiro só usa a Carteira;
+    // as demais formas de pagamento nunca mostram a Carteira.
+    const accountOptions = isIncome
+        ? ["Carteira", ...accounts]
+        : isCashPayment
+            ? ["Carteira"]
+            : accounts;
+
     const filteredTransactions = transactions.filter((transaction) =>
         normalizeText(transaction.description).includes(normalizeText(searchTerm))
     );
@@ -58,13 +68,12 @@ export default function Transactions() {
     function openEditPanel(transaction) {
         setType(transaction.type);
         setDescription(transaction.description);
-        setAmount(transaction.amount);
+        setAmount(String(transaction.amount).replace(".", ","));
         setCategory(transaction.category || "");
         setDate(transaction.date.slice(0, 10));
         setAccount(transaction.account || "");
         setPaymentMethod(transaction.payment_method || "");
         setNote(transaction.note || "");
-        setIsRecurring(transaction.is_recurring);
         setEditingId(transaction.id);
         openPanel();
     }
@@ -88,8 +97,37 @@ export default function Transactions() {
         setAccount("");
         setPaymentMethod("");
         setNote("");
-        setIsRecurring(false);
         setEditingId(null);
+    }
+
+    function handleTypeChange(newType) {
+        if (newType === type) {
+            return;
+        }
+
+        setType(newType);
+
+        // Categoria e forma de pagamento nunca valem ao trocar de tipo:
+        // a receita não usa e a despesa precisa escolher de novo.
+        setCategory("");
+        setPaymentMethod("");
+
+        // A Carteira só vale numa despesa em dinheiro. Como a forma de
+        // pagamento acabou de ser limpa, a Carteira também precisa sair.
+        if (newType === "expense" && account === "Carteira") {
+            setAccount("");
+        }
+    }
+
+    function handlePaymentMethodChange(method) {
+        setPaymentMethod(method);
+
+        if (method === "Dinheiro") {
+            setAccount("Carteira");
+        } else if (isCashPayment) {
+            // Estava em Dinheiro (conta travada): destrava e deixa vazia.
+            setAccount("");
+        }
     }
 
     async function handleSubmit(event) {
@@ -100,16 +138,28 @@ export default function Transactions() {
             return;
         }
 
+        // Aceita só o formato brasileiro: 150 ou 150,50 (até 2 casas).
+        if (!/^\d+(,\d{1,2})?$/.test(amount.trim())) {
+            alert("Informe o valor no formato 150,50.");
+            return;
+        }
+
+        const parsedAmount = Number(amount.trim().replace(",", "."));
+
+        if (parsedAmount <= 0) {
+            alert("O valor deve ser maior que zero.");
+            return;
+        }
+
         const transaction = {
             type,
             description,
-            amount,
-            category,
+            amount: parsedAmount,
+            category: isIncome ? null : category,
             date,
             account,
-            payment_method: paymentMethod,
-            note,
-            is_recurring: isRecurring
+            payment_method: isIncome ? null : paymentMethod,
+            note
         };
 
         try {
@@ -125,11 +175,11 @@ export default function Transactions() {
                 body: JSON.stringify(transaction)
             });
 
-            if (!response.ok) {
-                throw new Error("Erro ao salvar transação");
-            }
+            const data = await response.json().catch(() => ({}));
 
-            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error || "Erro ao salvar transação");
+            }
 
             if (isEditing) {
                 setTransactions((current) =>
@@ -142,6 +192,13 @@ export default function Transactions() {
             closePanel();
         } catch (error) {
             console.error("Erro ao salvar transação:", error);
+
+            // TypeError = o fetch nem chegou na API (servidor desligado, por exemplo).
+            alert(
+                error instanceof TypeError
+                    ? "Não foi possível conectar ao servidor."
+                    : error.message
+            );
         }
     }
 
@@ -445,7 +502,7 @@ export default function Transactions() {
 
                                     <button
                                         type="button"
-                                        onClick={() => setType("expense")}
+                                        onClick={() => handleTypeChange("expense")}
                                         className={type === "expense" ? "selected expense-selected" : ""}
                                     >
                                         <span className="type-option-icon">
@@ -457,7 +514,7 @@ export default function Transactions() {
 
                                     <button
                                         type="button"
-                                        onClick={() => setType("income")}
+                                        onClick={() => handleTypeChange("income")}
                                         className={type === "income" ? "selected income-selected" : ""}
                                     >
 
@@ -520,34 +577,36 @@ export default function Transactions() {
                                 Detalhes
                             </span>
 
-                            <div className="form-group">
+                            {!isIncome && (
+                                <div className="form-group">
 
-                                <label>
-                                    Categoria
-                                </label>
+                                    <label>
+                                        Categoria
+                                    </label>
 
-                                <select
-                                    value={category}
-                                    onChange={(event) => setCategory(event.target.value)}
-                                    required
-                                >
+                                    <select
+                                        value={category}
+                                        onChange={(event) => setCategory(event.target.value)}
+                                        required
+                                    >
 
-                                    <option value="" disabled>
-                                        Selecione uma categoria
-                                    </option>
-
-                                    {categories.map((category) => (
-                                        <option
-                                            key={category}
-                                            value={category}
-                                        >
-                                            {category}
+                                        <option value="" disabled>
+                                            Selecione uma categoria
                                         </option>
-                                    ))}
 
-                                </select>
+                                        {categories.map((category) => (
+                                            <option
+                                                key={category}
+                                                value={category}
+                                            >
+                                                {category}
+                                            </option>
+                                        ))}
 
-                            </div>
+                                    </select>
+
+                                </div>
+                            )}
 
                             <div className="form-group">
 
@@ -564,56 +623,60 @@ export default function Transactions() {
 
                             </div>
 
+                            {!isIncome && (
+                                <div className="form-group">
+
+                                    <label>
+                                        Forma de pagamento
+                                    </label>
+
+                                    <select
+                                        value={paymentMethod}
+                                        onChange={(event) => handlePaymentMethodChange(event.target.value)}
+                                        required
+                                    >
+
+                                        <option value="" disabled>
+                                            Selecione
+                                        </option>
+
+                                        {paymentMethods.map((method) => (
+                                            <option
+                                                key={method}
+                                                value={method}
+                                            >
+                                                {method}
+                                            </option>
+                                        ))}
+
+                                    </select>
+
+                                </div>
+                            )}
+
                             <div className="form-group">
 
                                 <label>
-                                    Conta
+                                    {isIncome ? "Conta de destino" : "Conta"}
                                 </label>
 
                                 <select
                                     value={account}
                                     onChange={(event) => setAccount(event.target.value)}
-                                >
-
-                                    <option value="">
-                                        Selecione uma conta
-                                    </option>
-
-                                    {accounts.map((account) => (
-                                        <option
-                                            key={account}
-                                            value={account}
-                                        >
-                                            {account}
-                                        </option>
-                                    ))}
-
-                                </select>
-
-                            </div>
-
-                            <div className="form-group">
-
-                                <label>
-                                    Forma de pagamento
-                                </label>
-
-                                <select
-                                    value={paymentMethod}
-                                    onChange={(event) => setPaymentMethod(event.target.value)}
+                                    disabled={!isIncome && isCashPayment}
                                     required
                                 >
 
                                     <option value="" disabled>
-                                        Selecione
+                                        Selecione uma conta
                                     </option>
 
-                                    {paymentMethods.map((method) => (
+                                    {accountOptions.map((accountOption) => (
                                         <option
-                                            key={method}
-                                            value={method}
+                                            key={accountOption}
+                                            value={accountOption}
                                         >
-                                            {method}
+                                            {accountOption}
                                         </option>
                                     ))}
 
@@ -646,28 +709,6 @@ export default function Transactions() {
                                 ></textarea>
 
                             </div>
-
-                            <label className="recurring-option">
-
-                                <input
-                                    type="checkbox"
-                                    checked={isRecurring}
-                                    onChange={(event) => setIsRecurring(event.target.checked)}
-                                />
-
-                                <div>
-
-                                    <span>
-                                        Transação recorrente
-                                    </span>
-
-                                    <p>
-                                        Marque caso essa movimentação se repita periodicamente.
-                                    </p>
-
-                                </div>
-
-                            </label>
 
                         </div>
 
