@@ -804,7 +804,7 @@ export default function Transactions() {
                                 >
                                     {transaction.type === "expense" ? "- " : "+ "}
 
-                                    R$ {Number(transaction.amount).toFixed(2).replace(".", ",")}
+                                    {formatCurrency(Number(transaction.amount))}
                                 </p>
 
                                 <div className="transaction-actions">
