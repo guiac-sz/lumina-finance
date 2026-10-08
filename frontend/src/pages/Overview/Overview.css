@@ -9,12 +9,10 @@
     background-color: #f8f9fc;
 }
 
+/* Mesmo espaçamento da tela de Transações: ocupa a largura toda, com 40px
+   de margem, então o título fica na borda esquerda e o botão na direita. */
 .overview-page {
-    max-width: 1440px;
-
-    margin: 0 auto;
-
-    padding: 36px 40px 56px;
+    padding: 40px;
 
     box-sizing: border-box;
 }
@@ -26,30 +24,32 @@
 
 .overview-header {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
 
     gap: 24px;
 
-    margin-bottom: 28px;
+    margin-bottom: 32px;
 }
 
 .overview-label {
+    display: block;
+
+    margin-bottom: 8px;
+
     color: #4f6ef7;
 
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.5px;
 }
 
 .overview-header h1 {
-    margin: 6px 0;
+    margin: 0 0 6px;
 
     color: #1f2937;
 
     font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
 }
 
 .overview-header p {
@@ -446,15 +446,22 @@
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 1000px) {
 
     .overview-page {
-        padding: 24px 16px 40px;
+        padding: 30px 20px;
     }
+
+}
+
+
+@media (max-width: 700px) {
 
     .overview-header {
         flex-direction: column;
         align-items: flex-start;
+
+        gap: 20px;
     }
 
     .overview-header-actions {
